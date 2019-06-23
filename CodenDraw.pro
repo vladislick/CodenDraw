@@ -30,7 +30,7 @@ SOURCES += \
         src/codeeditor.cpp \
         src/configfile.cpp \
         src/customgraphicsscene.cpp \
-        src/icon.cpp \
+        src/iconengine.cpp \
         src/main.cpp \
         src/mainscene.cpp \
         src/mainwindow.cpp
@@ -41,7 +41,7 @@ HEADERS += \
         src/codeeditor.h \
         src/configfile.h \
         src/customgraphicsscene.h \
-        src/icon.h \
+        src/iconengine.h \
         src/mainscene.h \
         src/mainwindow.h
 

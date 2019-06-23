@@ -143,9 +143,14 @@ echo -e "\e[1;45m           COPYING FILES \e[0m"
 echo ""
 
 #Копируем файлы
+mkdir   ~/.config/CodenDraw
+mkdir   ~/.config/CodenDraw/icons
+mkdir   ~/.config/CodenDraw/icons/Papirus
+
 cp -rfv icons/GitHubLogo.svg        ~/.config/CodenDraw/icons/
 cp -rfv icons/QtLogo.svg            ~/.config/CodenDraw/icons/
 cp -rfv icons/CodenDrawLogo.png     ~/.config/CodenDraw/icons/
+cp -rf -R icons/Papirus            ~/.config/CodenDraw/icons/
 
 sudo cp -rfv icons/24x24/codendraw.png   $iconsPath/24x24/apps
 sudo cp -rfv icons/32x32/codendraw.png   $iconsPath/32x32/apps

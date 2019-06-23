@@ -53,12 +53,12 @@ void AboutWindow::updatePixmaps() {
 
     // Show Git logo
     QImage gitLogoImage(iconsDirectory->path() + "/GitHubLogo.svg");
-
     gitLogoImage = gitLogoImage.scaledToHeight(256, Qt::FastTransformation);
 
+    // Change original Git color to the system color
     for (int x = 0; x < gitLogoImage.width(); x++)
         for (int y = 0; y < gitLogoImage.height(); y++)
-            if ((gitLogoImage.pixel(x, y) & 0xFF000000) >> 6 > 10) gitLogoImage.setPixelColor(x, y, QLabel().palette().color(QPalette::WindowText));
+            if (qAlpha(gitLogoImage.pixel(x, y)) > 0) gitLogoImage.setPixel(x, y, QLabel().palette().color(QPalette::WindowText).rgba());
 
     QPixmap gitLogo(QPixmap::fromImage(gitLogoImage));
     gitLogo.setDevicePixelRatio(qApp->devicePixelRatio());

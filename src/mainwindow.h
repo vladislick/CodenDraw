@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QtSvg/QSvgRenderer>
 #include <QScreen>
 #include <QDropEvent>
 #include <QDragEnterEvent>
@@ -39,7 +38,7 @@
 #include "customgraphicsscene.h"
 #include "codeeditor.h"
 #include "configfile.h"
-#include "icon.h"
+#include "iconengine.h"
 #include "mainscene.h"
 
 // Версия приложения
@@ -66,16 +65,6 @@
     #define mainAppPath     ""
 #endif
 
-
-/// Get file name from full file path
-inline QString fileNameOnly(const QString& filePath);
-/// Get file type
-inline QString fileType(const QString& filePath);
-
-inline int abs(int n);
-
-inline double absF(double n);
-
 namespace Ui {
     class MainWindow;
 }
@@ -85,6 +74,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    enum Message { Successfully, Information, Warning, Critical };
+
     explicit MainWindow(QWidget *parent = nullptr);
 
     void dragEnterEvent(QDragEnterEvent *event);
@@ -120,23 +111,23 @@ private slots:
 
 private:
 
-    /// Открыть файл
-    void openFile(const QString &filePath, bool silent = false);
+    /// Open file
+    void openFile(const QString &filePath, bool silentMode = false);
 
     /// Save file
     void saveFile(const QString& filePath);
 
     /// Open raster picture
-    bool openRasterPicture(const QString& filePath);
+    bool openRasterPicture(const QFileInfo &file);
 
     /// Open vector picture
-    bool openVectorPicture(const QString& filePath);
+    bool openVectorPicture(const QFileInfo &file);
 
     /// Open text file
-    bool openTextFile(const QString& filePath);
+    bool openTextFile(const QFileInfo &file);
 
     /// Send message
-    void sendMessage(QString status, int messageType = 0);
+    void sendMessage(QString status, Message message = Message::Information);
 
     /// Add the file to recent files menu
     void addRecentFile(const QString &filePath);
@@ -169,7 +160,6 @@ private:
     QLabel          *currentTimeLabel;
     QTimer          *currentTimeTimer;
     QTimer          *previewUpdateTimer;
-    QSvgRenderer    *svgRender;
     QPainter        *mainPainter;
     QList<QAction*> recentFiles;
     QList<QLineF>   *previewLine;
@@ -179,10 +169,12 @@ private:
     QString         savedCode;
     QString         openedFileName;
     QElapsedTimer   *elapsedTimer;
-    IconEngine      ico;
+    IconEngine      *mainIcon;
 
+    /// Info about file that is open
+    QFileInfo   *currentFile;
     /// Main application directory
-    QDir        *mainAppDir;
+    QDir        *applicationDirectory;
     ///
     QFile       *mainWindowStateFile;
     /// Application settings file

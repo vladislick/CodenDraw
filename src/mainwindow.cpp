@@ -2,34 +2,6 @@
 #include "aboutwindow.h"
 #include "ui_mainwindow.h"
 
-/// Get file name from full file path
-inline QString fileNameOnly(const QString& filePath) {
-    int lastIndex;
-    if (filePath.lastIndexOf("/") > filePath.lastIndexOf("\\"))
-        lastIndex = filePath.lastIndexOf("/");
-    else
-        lastIndex = filePath.lastIndexOf("\\");
-    return filePath.right(filePath.length() - lastIndex - 1);
-}
-
-/// Get file type
-inline QString fileType(const QString& filePath) {
-    if (filePath.lastIndexOf('.') > -1)
-        return filePath.right(filePath.length() - filePath.lastIndexOf('.') - 1);
-    else
-        return QString(); // Return empty string if it isn't a file
-}
-
-int abs(int n) {
-    if (n >= 0) return n;
-    return 0 - n;
-}
-
-double absF(double n) {
-    if (n >= 0) return n;
-    return 0 - n;
-}
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -59,20 +31,22 @@ MainWindow::MainWindow(QWidget *parent) :
     windowColor         = new QColor(QTextEdit().palette().color(QPalette::Window));
     textColor           = new QColor(QTextEdit().palette().color(QPalette::WindowText));
     highlightColor      = new QColor(QTextEdit().palette().color(QPalette::Highlight));
-    svgRender           = new QSvgRenderer();
     elapsedTimer        = new QElapsedTimer();
+
+    currentFile         = new QFileInfo;
 
     previewLine         = new QList<QLineF>;
 
 
     mainSettingsFile    = new QSettings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
-    mainAppDir          = new QDir(QFileInfo(mainSettingsFile->fileName()).dir().path());
-    mainWindowStateFile = new QFile(mainAppDir->path() + '/' + mainWindowState);
+    applicationDirectory= new QDir(QFileInfo(mainSettingsFile->fileName()).dir().path());
+    mainWindowStateFile = new QFile(applicationDirectory->path() + '/' + mainWindowState);
 
     mainTable           = new QSize();
     mainEngineSteps     = new QSize();
     mainStepSize        = new QSizeF();
     mainView            = new QPointF();
+    mainIcon            = new IconEngine;
 
     mainTable->setWidth(240);
     mainTable->setHeight(240);
@@ -83,9 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mainStepSize->setWidth(double(mainTable->width()) / mainEngineSteps->width());
     mainStepSize->setHeight(double(mainTable->height()) / mainEngineSteps->height());
 
-    ico.setDarkPath(mainAppDir->path() + '/' + mainThemeIcons + "Papirus-Dark/");
-    ico.setLightPath(mainAppDir->path() + '/' + mainThemeIcons + "Papirus/");
-    ico.setThemeStyle(IconEngine::Light);
+    mainIcon->setPath(applicationDirectory->path() + '/' + mainThemeIcons);
+    mainIcon->setThemeStyle(IconEngine::SystemColor);
 
     sendMessage(mainSettingsFile->fileName());
 
@@ -100,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->menuRecentFiles->addAction(tr("Empty"));
     ui->menuRecentFiles->actions().last()->setEnabled(false);
     ui->menuRecentFiles->addSeparator();
-    ui->menuRecentFiles->addAction(QIcon::fromTheme("edit-clear-history"), tr("&Clear list"));
+    ui->menuRecentFiles->addAction(QIcon::fromTheme("edit-clear-history", mainIcon->getByName("edit-clear-history")), tr("&Clear list"));
     connect(ui->menuRecentFiles->actions().last(), SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
     ui->menuRecentFiles->actions().last()->setVisible(false);
 
@@ -111,22 +84,22 @@ MainWindow::MainWindow(QWidget *parent) :
     loadRecentFilesList();
 
     // Set icons for menu actions
-    ui->actionOpen->setIcon(QIcon::fromTheme("document-open", ico.getByName("document-open")));
-    ui->menuRecentFiles->setIcon(QIcon::fromTheme("document-open-recent", ico.getByName("document-open-recent")));
-    ui->actionSave->setIcon(QIcon::fromTheme("document-save", ico.getByName("document-save")));
-    ui->actionSaveAs->setIcon(QIcon::fromTheme("document-save-as", ico.getByName("document-save-as")));
-    ui->actionRefresh->setIcon(QIcon::fromTheme("view-refresh", ico.getByName("view-refresh")));
-    ui->actionClose->setIcon(QIcon::fromTheme("document-close", ico.getByName("document-close")));
-    ui->actionQuit->setIcon(QIcon::fromTheme("application-exit", ico.getByName("application-exit")));
-    ui->actionAbout->setIcon(QIcon::fromTheme("help-about", ico.getByName("help-about")));
-    ui->menuPanels->setIcon(QIcon::fromTheme("view-list-details", ico.getByName("view-list-details")));
+    ui->actionOpen->setIcon(QIcon::fromTheme("document-open", mainIcon->getByName("document-open")));
+    ui->menuRecentFiles->setIcon(QIcon::fromTheme("document-open-recent", mainIcon->getByName("document-open-recent")));
+    ui->actionSave->setIcon(QIcon::fromTheme("document-save", mainIcon->getByName("document-save")));
+    ui->actionSaveAs->setIcon(QIcon::fromTheme("document-save-as", mainIcon->getByName("document-save-as")));
+    ui->actionRefresh->setIcon(QIcon::fromTheme("view-refresh", mainIcon->getByName("view-refresh")));
+    ui->actionClose->setIcon(QIcon::fromTheme("document-close", mainIcon->getByName("document-close")));
+    ui->actionQuit->setIcon(QIcon::fromTheme("application-exit", mainIcon->getByName("application-exit")));
+    ui->actionAbout->setIcon(QIcon::fromTheme("help-about", mainIcon->getByName("help-about")));
+    ui->menuPanels->setIcon(QIcon::fromTheme("view-list-details", mainIcon->getByName("view-list-details")));
     ui->actionStart->setIcon(QIcon::fromTheme("media-playback-start"));
     ui->actionStop->setIcon(QIcon::fromTheme("media-playback-stop"));
     ui->actionPause->setIcon(QIcon::fromTheme("media-playback-pause"));
     ui->actionConfigure->setIcon(QIcon::fromTheme("configure", QIcon::fromTheme("gnome-settings")));
     ui->actionSendCommand->setIcon(QIcon::fromTheme("document-send"));
-    ui->actionInvertColors->setIcon(QIcon::fromTheme("invertimage"));
-    ui->actionAntialiasing->setIcon(QIcon::fromTheme("blurimage"));
+    ui->actionInvertColors->setIcon(QIcon::fromTheme("invertimage", mainIcon->getByName("invertimage")));
+    ui->actionAntialiasing->setIcon(QIcon::fromTheme("blurimage", mainIcon->getByName("blurimage")));
     ui->menuPort->setIcon(QIcon::fromTheme("go-next"));
 
 
@@ -540,7 +513,8 @@ void MainWindow::drawRulers(double scale, int dx, int dy, QGraphicsScene* scene,
 }
 
 /// Add the file to recent files menu
-void MainWindow::addRecentFile(const QString &filePath) {
+void MainWindow::addRecentFile(const QString &filePath)
+{
     QFileInfo file(filePath);
 
     // Show button "Clear list"
@@ -552,7 +526,17 @@ void MainWindow::addRecentFile(const QString &filePath) {
     QString actionName = '&' + file.fileName() + " [" + filePath + "]";
 
     // Set the icon for this file type
-    QIcon fileIcon = QIcon::fromTheme("unknown");
+    mainIcon->setThemeStyle(IconEngine::NoStyle);
+
+    QIcon fileIcon;
+    if (file.suffix() == "jpg" || file.suffix() == "png")
+        fileIcon = QIcon::fromTheme("image-x-generic", mainIcon->getByName("image-x-generic"));
+    else if (file.suffix() == "svg")
+        fileIcon = QIcon::fromTheme("image-x-svg+xml", mainIcon->getByName("image-x-svg+xml"));
+    else
+        fileIcon = QIcon::fromTheme("text-x-generic", mainIcon->getByName("text-x-generic"));
+
+    mainIcon->setThemeStyle(IconEngine::SystemColor);
 
     // Set start index to do a correct shift
     int startIndex = recentFiles.count() - 1;
@@ -670,23 +654,36 @@ void MainWindow::updateGUI() {
     *textColor       = QTextEdit().palette().color(QPalette::WindowText);
     *highlightColor  = QTextEdit().palette().color(QPalette::Highlight);
 
-    ui->verticalSlider->setMinimum(int(double(200 * 1000) / mainTable->width()));
-    ui->verticalSlider->setMaximum(int(ui->graphicsView->width() * 10));
+    // Update current file status
+    if (currentFile->filePath() != QString())
+    {
+        this->setWindowTitle(currentFile->fileName() + " - " + QCoreApplication::applicationName());
+        ui->actionClose->setText(tr("&Close «%1»").arg(currentFile->fileName()));
+        ui->actionClose->setEnabled(true);
+        ui->actionSave->setEnabled(true);
+    }
+    else
+    {
+        this->setWindowTitle(QCoreApplication::applicationName());
+        ui->actionClose->setText(tr("&Close"));
+        ui->actionClose->setEnabled(false);
+        ui->actionSave->setEnabled(false);
+    }
 }
 
 /// Send message
-void MainWindow::sendMessage(QString status, int messageType) {
+void MainWindow::sendMessage(QString status, Message message) {
     // Set message color
     QColor messageColor;
-    if (messageType == 0)       messageColor = QTextEdit().palette().color(QPalette::WindowText);
-    else if (messageType == 1)  messageColor = Qt::red;
-    else if (messageType == 2)  messageColor.setRgb(255, 97, 6);    // Orange
-    else if (messageType == 3)  messageColor.setRgb(61, 174, 233);  // Light blue
-    else if (messageType == 4)  messageColor = Qt::green;
 
-    // Change color a little bit for more contrast with different themes
-    if (messageType > 0 && windowColor->lightness() > 127) messageColor = messageColor.darker(140);
-    else                                                   messageColor = messageColor.lighter(120);
+    if (message == Message::Successfully)
+        messageColor.setRgb(68, 197, 23); // Green color
+    else if (message == Message::Information)
+        messageColor = QLabel().palette().color(QPalette::WindowText);
+    else if (message == Message::Warning)
+        messageColor.setRgb(248, 109, 0); // Orange color
+    else if (message == Message::Critical)
+        messageColor.setRgb(245, 6, 7); // Red color
 
     // Show the message in Status Bar and Output dock
     currentStatusLabel->setText("<font color=" + messageColor.name() + '>' + status + "</font>");
@@ -694,30 +691,31 @@ void MainWindow::sendMessage(QString status, int messageType) {
 }
 
 /// Open raster picture
-bool MainWindow::openRasterPicture(const QString& filePath) {
+bool MainWindow::openRasterPicture(const QFileInfo& file) {
     return false;
 }
 
 /// Open vector picture
-bool MainWindow::openVectorPicture(const QString& filePath) {
-    svgRender->load(filePath);
+bool MainWindow::openVectorPicture(const QFileInfo& file) {
+
 
 }
 
 /// Open text file
-bool MainWindow::openTextFile(const QString& filePath) {
-    QFile file(filePath);
+bool MainWindow::openTextFile(const QFileInfo& file) {
+//    QFile file(file.filePath());
 
-    // Try to open the file
-    if (file.open(QFile::ReadOnly | QFile::Text)) {
-        savedCode = file.readAll().toStdString().c_str();
-        code->setPlainText(savedCode);
-        return true;
-    }
-    // If cannot open, return an error message
-    else {
-        return false;
-    }
+//    // Try to open the file
+//    if (file.open(QFile::ReadOnly | QFile::Text)) {
+//        savedCode = file.readAll().toStdString().c_str();
+//        code->setPlainText(savedCode);
+//        return true;
+//    }
+//    // If cannot open, return an error message
+//    else {
+//        return false;
+//    }
+    return true;
 }
 
 void MainWindow::openRecentFile() {
@@ -747,77 +745,60 @@ void MainWindow::clearRecentFiles() {
     ui->menuRecentFiles->actions()[ui->menuRecentFiles->actions().size() - 3]->setVisible(true);
 }
 
-void MainWindow::openFile(const QString &filePath, bool silent) {
-    bool    fileStatus;
-    int     tmpFileType;
+/// Open file
+void MainWindow::openFile(const QString &filePath, bool silentMode)
+{
+    QFileInfo file(filePath);
+    bool    fileOpenStatus;
 
     // If the file is a pixel picture
-    if (fileType(filePath) == "png" || fileType(filePath) == "jpg") {
-        fileStatus = openRasterPicture(filePath);
-        tmpFileType = 2;
-    }
+    if (file.suffix() == "png" || file.suffix() == "jpg")
+        fileOpenStatus = openRasterPicture(file);
+
     // If the file is a vector picture
-    else if (fileType(filePath) == "svg") {
-        fileStatus = openVectorPicture(filePath);
-        tmpFileType = 1;
-    }
+    else if (file.suffix() == "svg")
+        fileOpenStatus = openVectorPicture(file);
+
     // If it's a text file
-    else if (fileType(filePath) == "txt" || fileType(filePath) == "gcode" || fileType(filePath) == "gc") {
-        fileStatus = openTextFile(filePath);
-        tmpFileType = 0;
-    }
-    // if it's unknown file
-    else {
-        fileStatus = false;
-        tmpFileType = -1;
-    }
+    else
+        fileOpenStatus = openTextFile(file);
 
     // If file is opened
-    if (fileStatus) {
-        openedFileName = filePath;
-        openedFileType = tmpFileType;
-        this->setWindowTitle(fileNameOnly(filePath) + " — qInkDraw");
+    if (fileOpenStatus)
+        currentFile->setFile(file.absoluteFilePath());
 
-        if (!silent) sendMessage(tr("«%1» opened successfully").arg(filePath), 3);
+    // Update user interface
+    updateGUI();
 
-        if (tmpFileType == 0) {
-            ui->actionSave->setText(tr("&Save") + " «" + fileNameOnly(openedFileName) + "»");
-            if (savedCode != code->toPlainText())   ui->actionSave->setEnabled(true);
-            else                                    ui->actionSave->setEnabled(false);
-        } else {
-            ui->actionSave->setText(tr("&Save"));
-            ui->actionSave->setEnabled(false);
-        }
-        ui->actionClose->setText(tr("&Close") + " «" + fileNameOnly(openedFileName) + "»");
-        ui->actionClose->setEnabled(true);
-    }
-    // If cannot open
-    else if (!silent) {
-        if (tmpFileType == -1)  sendMessage(tr("Unknown file «%1»").arg(filePath), 1);
-        else                    sendMessage(tr("Could not open «%1»").arg(filePath), 2);
-    }
+    if (silentMode) return;
+
+    // Show message if needed
+    if (fileOpenStatus)
+        sendMessage(tr("«%1» successfully opened").arg(file.fileName()), Message::Successfully);
+    else
+        sendMessage(tr("Could not open «%1»").arg(file.fileName()), Message::Warning);
 }
 
 /// Save file
 void MainWindow::saveFile(const QString& filePath) {
-    // Write code to the file
-    QFile file(filePath);
-    if (file.open(QFile::WriteOnly)) {
-        QByteArray array = code->toPlainText().toLocal8Bit();
-        file.write(array);
+//    // Write code to the file
+//    QFile file(filePath);
+//    if (file.open(QFile::WriteOnly)) {
+//        QByteArray array = code->toPlainText().toLocal8Bit();
+//        file.write(array);
 
-        // Close file
-        file.close();
+//        // Close file
+//        file.close();
 
-        sendMessage(tr("«%1» saved successfully").arg(filePath));
-    } else {
-        sendMessage(tr("Could not save as «%1»").arg(filePath), 2);
-        return;
-    }
+//        sendMessage(tr("«%1» saved successfully").arg(filePath));
+//    } else {
+//        sendMessage(tr("Could not save as «%1»").arg(filePath));
+//        return;
+//    }
 
-    // Open just created file
-    addRecentFile(filePath);
-    openFile(filePath, true);
+//    // Open just created file
+//    addRecentFile(filePath);
+//    openFile(filePath, true);
 }
 
 void MainWindow::on_actionQuit_triggered()
@@ -828,7 +809,7 @@ void MainWindow::on_actionQuit_triggered()
 void MainWindow::on_actionAbout_triggered()
 {
     AboutWindow about;
-    about.setAppDir(mainAppDir->path());
+    about.setAppDir(applicationDirectory->path());
     about.setModal(true);
     int x = this->geometry().x() + (this->geometry().width() - about.geometry().width()) / 2,
         y = this->geometry().y() + (this->geometry().height() - about.geometry().height()) / 2;
@@ -864,16 +845,13 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionClose_triggered()
 {
-    sendMessage(tr("«%1» closed").arg(openedFileName));
-    openedFileName.clear();
-    openedFileType = 0;
+    sendMessage(tr("\"%1\" closed").arg(currentFile->fileName()));
+    currentFile->setFile(QString());
+
     savedCode.clear();
     code->clear();
-    ui->actionClose->setText(tr("&Close"));
-    ui->actionClose->setEnabled(false);
-    ui->actionSave->setText(tr("&Save"));
-    ui->actionSave->setEnabled(false);
-    this->setWindowTitle("qInkDraw");
+
+    updateGUI();
 }
 
 void MainWindow::on_actionSaveAs_triggered()
