@@ -1,0 +1,6 @@
+.directory
+.vscode
+*.user
+.qmake.stash
+Makefile
+CodeDraw 
