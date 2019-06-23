@@ -40,8 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     // Set application name
-    QCoreApplication::setApplicationName("CodeDraw");
-    QCoreApplication::setOrganizationName("CodeDraw");
+    QCoreApplication::setApplicationName("CodenDraw");
+    QCoreApplication::setOrganizationName("CodenDraw");
 
     this->setAcceptDrops(true);
     this->setWindowTitle(QCoreApplication::applicationName());

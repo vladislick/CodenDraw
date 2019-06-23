@@ -649,7 +649,7 @@
   </widget>
   <action name="actionAbout">
    <property name="text">
-    <string>About qInkDraw</string>
+    <string>About</string>
    </property>
   </action>
   <action name="actionConfigure">

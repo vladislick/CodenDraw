@@ -1,13 +1,13 @@
 [Desktop Entry]
-Name=CodeDraw
-Version=1.0.0
+Name=CodenDraw
+Version=1.0
 Comment=Qt Application for working with CNC equipment
 Comment[ru]=Qt Приложение для управления ЧПУ оборудованием
-GenericName=Application for working with CNC equipment
-GenericName[ru]=Приложение для управления ЧПУ оборудованием
+GenericName=CNC equipment control
+GenericName[ru]=Управление ЧПУ оборудованием
 Type=Application
-Exec=/usr/bin/codedraw
-Icon=codedraw.png
+Exec=/usr/bin/codendraw
+Icon=codendraw.png
 Categories=Utility
 Terminal=false
 MimeType=image/jpeg;image/png;image/svg+xml;text/x.gcode;

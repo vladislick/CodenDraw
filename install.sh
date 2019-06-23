@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ###################################################
-#####    Vladislab Vdovin @vladislick 2019    #####
+#####    Vdovin Vladislav @vladislick 2019    #####
 #####           CodeDraw installer            #####
 ###################################################
 
 echo ""
-echo -e "\e[1;42m WELCOME TO CODEDRAW INSTALLER \e[0m"
+echo -e "\e[1;42m WELCOME TO CODENDRAW INSTALLER \e[0m"
 echo ""
 
 ### Массив строк, каждая из которых указывает пакеты-зависимости разных систем
@@ -143,21 +143,20 @@ echo -e "\e[1;45m           COPYING FILES \e[0m"
 echo ""
 
 #Копируем файлы
-cp -rfv icons/GitHubLogo.svg        ~/.config/CodeDraw/icons/
-cp -rfv icons/QtLogo.svg        ~/.config/CodeDraw/icons/
-cp -rfv icons/CodeDrawLogo.png  ~/.config/CodeDraw/icons/
+cp -rfv icons/GitHubLogo.svg        ~/.config/CodenDraw/icons/
+cp -rfv icons/QtLogo.svg            ~/.config/CodenDraw/icons/
+cp -rfv icons/CodenDrawLogo.png     ~/.config/CodenDraw/icons/
 
-sudo cp -rfv icons/24x24/codedraw.png   $iconsPath/24x24/apps
-sudo cp -rfv icons/32x32/codedraw.png   $iconsPath/32x32/apps
-sudo cp -rfv icons/64x64/codedraw.png   $iconsPath/64x64/apps
-sudo cp -rfv icons/128x128/codedraw.png $iconsPath/128x128/apps
+sudo cp -rfv icons/24x24/codendraw.png   $iconsPath/24x24/apps
+sudo cp -rfv icons/32x32/codendraw.png   $iconsPath/32x32/apps
+sudo cp -rfv icons/64x64/codendraw.png   $iconsPath/64x64/apps
+sudo cp -rfv icons/128x128/codendraw.png $iconsPath/128x128/apps
 
-sudo cp -rfv CodeDraw $installPath/codedraw
-sudo cp -rfv CodeDraw.desktop $desktopPath
-#sudo cp -rfv CodeDraw.desktop ~/.local/share/applications/
+sudo cp -rfv CodenDraw $installPath/codendraw
+sudo cp -rfv CodenDraw.desktop $desktopPath
 
 ### Даём права на выполнение и запись
-sudo chmod a+x $installPath/codedraw
+sudo chmod a+x $installPath/codendraw
 
 ### Устанавливаем правила последовательного порта
 sudo cp 99-platformio-udev.rules /etc/udev/rules.d/99-platformio-udev.rules

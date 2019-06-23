@@ -66,9 +66,9 @@ void AboutWindow::updatePixmaps() {
     ui->labelGitLogo->setPixmap(gitLogo);
 
     // Show application logo
-    QPixmap appLogo(iconsDirectory->path() + "/"+ QCoreApplication::applicationName() + "Logo.svg.png");
+    QPixmap appLogo(iconsDirectory->path() + "/"+ QCoreApplication::applicationName() + "Logo.png");
     appLogo.setDevicePixelRatio(qApp->devicePixelRatio());
-    ui->labelAppLogo->setPixmap(appLogo.scaledToHeight(int(qApp->devicePixelRatio() * 80), Qt::SmoothTransformation));
+    ui->labelAppLogo->setPixmap(appLogo.scaledToHeight(int(qApp->devicePixelRatio() * 70), Qt::SmoothTransformation));
 
     // Show Qt logo
     QPixmap qtLogo(iconsDirectory->path() + "/QtLogo.svg");
