@@ -133,7 +133,7 @@ echo ""
 echo -e "\e[1;46m    BUILDING THE PROJECT \e[0m"
 echo ""
 
-qmake CodeDraw.pro
+qmake CodenDraw.pro
 make
 
 echo ""

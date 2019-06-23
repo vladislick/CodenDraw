@@ -11,7 +11,7 @@
 #include <QPixmap>
 #include <QFont>
 
-#define ProjectLink "https://github.com/vladislick/qInkDraw"
+#define ProjectLink "https://github.com/vladislick/CodenDraw"
 
 namespace Ui {
 class AboutWindow;
