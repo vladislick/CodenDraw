@@ -24,19 +24,6 @@
     <filter
        inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
-       id="filter1360"
-       x="-0.049411137"
-       width="1.0988223"
-       y="-0.047133572"
-       height="1.0942671">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.8391913"
-         id="feGaussianBlur1362" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       style="color-interpolation-filters:sRGB"
        id="filter1815"
        x="-0.17633958"
        width="1.3526792"
@@ -47,6 +34,19 @@
          stdDeviation="0.66128323"
          id="feGaussianBlur1817" />
     </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter4619"
+       x="-0.024705567"
+       width="1.0494111"
+       y="-0.023566784"
+       height="1.0471336">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.91959558"
+         id="feGaussianBlur4621" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -55,9 +55,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.3458835"
-     inkscape:cx="139.73014"
-     inkscape:cy="151.93961"
+     inkscape:zoom="2.2448916"
+     inkscape:cx="146.80757"
+     inkscape:cy="219.10513"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -88,7 +88,7 @@
      id="layer1"
      transform="translate(0,-183)">
     <g
-       style="fill:#848484;fill-opacity:1;filter:url(#filter1360)"
+       style="fill:#848484;fill-opacity:1;filter:url(#filter4619)"
        inkscape:label="tableShadow"
        transform="matrix(0.87313482,0,0,1.0250934,4.3432569,-13.198074)"
        id="g1198">
