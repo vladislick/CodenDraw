@@ -14,13 +14,12 @@
 #include <QIcon>
 #include <QDir>
 
-#define  IconWidth  64
-#define  IconHeight 64
+#define  IconPixelSize  32
 
 class IconEngine
 {
 public:
-    enum ThemeStyle { NoStyle, SystemColor, Dark, Light };
+    enum Style { NoStyle, SystemColor, Dark, Light };
 
     IconEngine();
 
@@ -37,7 +36,9 @@ public:
     /// Set path to the icons for light theme
     void    setLightPath(QString path);
     /// Set icon style
-    void    setThemeStyle(ThemeStyle style);
+    void    setStyle(Style style);
+    /// Get icon style
+    Style   style();
     /// Get icon from icons directory
     QIcon   getByName(QString iconName);
     /// Find an icon in the directory
@@ -48,7 +49,7 @@ private:
     QDir        *darkDirectory;
     QDir        *lightDirectory;
     QDir        *iconDirectory;
-    ThemeStyle   iconStyle = ThemeStyle::NoStyle;
+    Style   iconStyle = Style::NoStyle;
 
 };
 

@@ -29,9 +29,15 @@ void IconEngine::setLightPath(QString path)
 }
 
 /// Set icon style
-void IconEngine::setThemeStyle(ThemeStyle style)
+void IconEngine::setStyle(Style style)
 {
     iconStyle = style;
+}
+
+/// Get icon style
+IconEngine::Style IconEngine::style()
+{
+    return iconStyle;
 }
 
 /// Get directory path that has icons
@@ -57,9 +63,9 @@ QIcon IconEngine::getByName(QString iconName)
     QFileInfo file;
 
     // Try to find needed icon
-    if (iconStyle == ThemeStyle::Dark)
+    if (iconStyle == Style::Dark)
         file.setFile(findByName(iconName, darkDirectory->path()));
-    else if (iconStyle == ThemeStyle::Light)
+    else if (iconStyle == Style::Light)
         file.setFile(findByName(iconName, lightDirectory->path()));
     else
         file.setFile(findByName(iconName, iconDirectory->path()));
@@ -67,47 +73,49 @@ QIcon IconEngine::getByName(QString iconName)
     // If the icon is found
     if (file.filePath() != "")
     {
+        QImage  imageNormal(IconPixelSize, IconPixelSize, QImage::Format_ARGB32);
+        QImage  imageSelected(IconPixelSize, IconPixelSize, QImage::Format_ARGB32);
+
+        // Set icons image
         if (file.suffix() == "png")
         {
-            mainIcon->addFile(file.filePath());
-            mainIcon->addFile(file.filePath(), QSize(), QIcon::Selected);
+            imageNormal.load(file.filePath());
+            imageSelected.load(file.filePath());
         }
         else if (file.suffix() == "svg")
         {
-            QPixmap pixmap(file.filePath());
-            pixmap = pixmap.scaled(IconWidth, IconHeight, Qt::KeepAspectRatioByExpanding, Qt::FastTransformation);
-            mainIcon->addPixmap(pixmap);
-            mainIcon->addPixmap(pixmap, QIcon::Selected);
-        }
-
-        if (iconStyle == ThemeStyle::SystemColor)
-        {
-            QColor textColor      = QLabel().palette().color(QPalette::WindowText),
-                   highlightColor = QLabel().palette().color(QPalette::HighlightedText);
-
+            // Create needed objects to render SVG file
             QSvgRenderer renderer(file.filePath());
-            QImage  image(renderer.defaultSize().width() * 2, renderer.defaultSize().height() * 2, QImage::Format_ARGB32);
-            QPainter painter(&image);
-            image.fill(0x00000000);
-            renderer.render(&painter);
+            QPainter painterNormal(&imageNormal);
+            QPainter painterSelected(&imageSelected);
 
-            for (int x = 0; x < image.width(); x++)
-                for (int y = 0; y < image.height(); y++)
-                    if (qAlpha(image.pixel(x, y)) > 0) image.setPixel(x, y, qRgba(textColor.red(), textColor.green(), textColor.blue(), qAlpha(image.pixel(x, y))));
+            // Clear images
+            imageNormal.fill(0x00000000);
+            imageSelected.fill(0x00000000);
 
-            mainIcon->addPixmap(QPixmap::fromImage(image), QIcon::Normal);
-
-            for (int x = 0; x < image.width(); x++)
-                for (int y = 0; y < image.height(); y++)
-                    if (qAlpha(image.pixel(x, y)) > 0) image.setPixel(x, y, qRgba(highlightColor.red(), highlightColor.green(), highlightColor.blue(), qAlpha(image.pixel(x, y))));
-
-            mainIcon->addPixmap(QPixmap::fromImage(image), QIcon::Selected);
+            // Render icon image
+            renderer.render(&painterNormal);
+            renderer.render(&painterSelected);
         }
+
+        // Change icons color to system
+        if (iconStyle == Style::SystemColor)
+            for (int x = 0; x < imageNormal.width(); x++)
+                for (int y = 0; y < imageNormal.height(); y++)
+                {
+                    if (qAlpha(imageNormal.pixel(x, y)) > 0)
+                        imageNormal.setPixel(x, y, (QLabel().palette().color(QPalette::WindowText).rgb() & 0x00ffffff) + (imageNormal.pixel(x, y) & 0xff000000));
+                    if (qAlpha(imageSelected.pixel(x, y)) > 0)
+                        imageSelected.setPixel(x, y, (QLabel().palette().color(QPalette::HighlightedText).rgb() & 0x00ffffff) + (imageSelected.pixel(x, y) & 0xff000000));
+                }
+
+        // Set fixed icons
+        mainIcon->addPixmap(QPixmap::fromImage(imageNormal), QIcon::Normal);
+        mainIcon->addPixmap(QPixmap::fromImage(imageSelected), QIcon::Selected);
 
         return *mainIcon;
     }
-    else
-        return QIcon();
+    else return QIcon(); // Return an empty icon if cannot find needed icon
 }
 
 QString IconEngine::findByName(const QString &fileName, const QString &directory)
