@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Setup "Recent files" menu
     for (int i = 0; i < RecentFilesMax; i++) {
-        QAction* action = new QAction();
+        QAction* action = new QAction(this);
         action->setVisible(false);
         connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile()));
         recentFiles.append(action);
@@ -77,9 +77,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->menuRecentFiles->actions().last(), SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
     ui->menuRecentFiles->actions().last()->setVisible(false);
 
-    // Load recent files from last session
-    //loadRecentFiles(recentFilePath);
-    //loadWindowConfiguration(mainWindowLookPath, mainWindowStatePath);
     loadWindowConfiguration();
     loadRecentFilesList();
 
@@ -93,14 +90,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionQuit->setIcon(QIcon::fromTheme("application-exit", mainIcon->getByName("application-exit")));
     ui->actionAbout->setIcon(QIcon::fromTheme("help-about", mainIcon->getByName("help-about")));
     ui->menuPanels->setIcon(QIcon::fromTheme("view-list-details", mainIcon->getByName("view-list-details")));
-    ui->actionStart->setIcon(QIcon::fromTheme("media-playback-start"));
-    ui->actionStop->setIcon(QIcon::fromTheme("media-playback-stop"));
-    ui->actionPause->setIcon(QIcon::fromTheme("media-playback-pause"));
-    ui->actionConfigure->setIcon(QIcon::fromTheme("configure", QIcon::fromTheme("gnome-settings")));
-    ui->actionSendCommand->setIcon(QIcon::fromTheme("document-send"));
+    ui->actionStart->setIcon(QIcon::fromTheme("media-playback-start", mainIcon->getByName("media-playback-start")));
+    ui->actionStop->setIcon(QIcon::fromTheme("media-playback-stop", mainIcon->getByName("media-playback-stop")));
+    ui->actionPause->setIcon(QIcon::fromTheme("media-playback-pause", mainIcon->getByName("media-playback-pause")));
+    ui->actionConfigure->setIcon(QIcon::fromTheme("configure", mainIcon->getByName("configure")));
+    ui->actionSendCommand->setIcon(QIcon::fromTheme("document-send", mainIcon->getByName("document-send")));
     ui->actionInvertColors->setIcon(QIcon::fromTheme("invertimage", mainIcon->getByName("invertimage")));
     ui->actionAntialiasing->setIcon(QIcon::fromTheme("blurimage", mainIcon->getByName("blurimage")));
-    ui->menuPort->setIcon(QIcon::fromTheme("go-next"));
 
 
     // Set shortcuts for menu actions
@@ -113,14 +109,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionConfigure->setShortcut(QKeySequence::Preferences);
 
     // Set icons for buttons in "Control" dock
-    ui->toolButtonUp->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
-    ui->toolButtonDown->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
-    ui->toolButtonLeft->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowLeft));
-    ui->toolButtonRight->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowRight));
-    ui->toolButtonForward->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
-    ui->toolButtonBack->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
-    ui->toolButtonHome->setIcon(QIcon::fromTheme("go-home"));
-    ui->toolButtonSend->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowForward));
+    ui->toolButtonUp->setIcon(QIcon::fromTheme("go-up", mainIcon->getByName("go-up")));
+    ui->toolButtonDown->setIcon(QIcon::fromTheme("go-down", mainIcon->getByName("go-down")));
+    ui->toolButtonLeft->setIcon(QIcon::fromTheme("go-previous", mainIcon->getByName("go-previous")));
+    ui->toolButtonRight->setIcon(QIcon::fromTheme("go-next", mainIcon->getByName("go-next")));
+    ui->toolButtonForward->setIcon(QIcon::fromTheme("go-up", mainIcon->getByName("go-up")));
+    ui->toolButtonBack->setIcon(QIcon::fromTheme("go-down", mainIcon->getByName("go-down")));
+    ui->toolButtonHome->setIcon(QIcon::fromTheme("go-home", mainIcon->getByName("go-home")));
+    ui->toolButtonSend->setIcon(QIcon::fromTheme("document-send", mainIcon->getByName("document-send")));
 
     // Add our code widget to "Code" dock
     ui->verticalLayout_6->addWidget(code);
@@ -140,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dockWidgetAxisValue->toggleViewAction()->setText(tr("Show panel"));
     ui->menuAxisValuePanel->addAction(ui->dockWidgetAxisValue->toggleViewAction());
 
-    ui->menuOutputPanel->addAction(QIcon::fromTheme("edit-clear-history"), tr("&Clear"));
+    ui->menuOutputPanel->addAction(QIcon::fromTheme("edit-clear-history", mainIcon->getByName("edit-clear-history")), tr("&Clear"));
 
     ui->graphicsView->setScene(mainScene);
 

@@ -85,22 +85,23 @@ QIcon IconEngine::getByName(QString iconName)
             QColor textColor      = QLabel().palette().color(QPalette::WindowText),
                    highlightColor = QLabel().palette().color(QPalette::HighlightedText);
 
-            QImage  image(file.filePath());
-            image = image.scaledToHeight(IconHeight, Qt::FastTransformation);
+            QSvgRenderer renderer(file.filePath());
+            QImage  image(renderer.defaultSize().width() * 2, renderer.defaultSize().height() * 2, QImage::Format_ARGB32);
+            QPainter painter(&image);
+            image.fill(0x00000000);
+            renderer.render(&painter);
 
             for (int x = 0; x < image.width(); x++)
                 for (int y = 0; y < image.height(); y++)
                     if (qAlpha(image.pixel(x, y)) > 0) image.setPixel(x, y, qRgba(textColor.red(), textColor.green(), textColor.blue(), qAlpha(image.pixel(x, y))));
 
-            image.save(file.dir().path() + '/' + "tmp.png");
-            mainIcon->addFile(file.dir().path() + '/' + "tmp.png");
+            mainIcon->addPixmap(QPixmap::fromImage(image), QIcon::Normal);
 
             for (int x = 0; x < image.width(); x++)
                 for (int y = 0; y < image.height(); y++)
                     if (qAlpha(image.pixel(x, y)) > 0) image.setPixel(x, y, qRgba(highlightColor.red(), highlightColor.green(), highlightColor.blue(), qAlpha(image.pixel(x, y))));
 
-            image.save(file.dir().path() + '/' + "tmp.png");
-            mainIcon->addFile(file.dir().path() + '/' + "tmp.png", QSize(), QIcon::Selected);
+            mainIcon->addPixmap(QPixmap::fromImage(image), QIcon::Selected);
         }
 
         return *mainIcon;

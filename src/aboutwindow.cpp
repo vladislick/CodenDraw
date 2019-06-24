@@ -51,9 +51,18 @@ void AboutWindow::setAppDir(const QString &path) {
 
 void AboutWindow::updatePixmaps() {
 
+    QSvgRenderer renderer(iconsDirectory->path() + "/GitHubLogo.svg");
+
+    // Show application logo
+    QPixmap appLogo(iconsDirectory->path() + "/"+ QCoreApplication::applicationName() + "Logo.png");
+    appLogo.setDevicePixelRatio(qApp->devicePixelRatio());
+    ui->labelAppLogo->setPixmap(appLogo.scaledToHeight(int(qApp->devicePixelRatio() * 70), Qt::SmoothTransformation));
+
     // Show Git logo
-    QImage gitLogoImage(iconsDirectory->path() + "/GitHubLogo.svg");
-    gitLogoImage = gitLogoImage.scaledToHeight(256, Qt::FastTransformation);
+    QImage gitLogoImage(renderer.defaultSize().width() / 2, renderer.defaultSize().height() / 2, QImage::Format_ARGB32);
+    gitLogoImage.fill(0x00000000);
+    QPainter painter(&gitLogoImage);
+    renderer.render(&painter);
 
     // Change original Git color to the system color
     for (int x = 0; x < gitLogoImage.width(); x++)
@@ -62,16 +71,16 @@ void AboutWindow::updatePixmaps() {
 
     QPixmap gitLogo(QPixmap::fromImage(gitLogoImage));
     gitLogo.setDevicePixelRatio(qApp->devicePixelRatio());
-    gitLogo = gitLogo.scaledToHeight(int(qApp->devicePixelRatio() * 32), Qt::SmoothTransformation);
-    ui->labelGitLogo->setPixmap(gitLogo);
-
-    // Show application logo
-    QPixmap appLogo(iconsDirectory->path() + "/"+ QCoreApplication::applicationName() + "Logo.png");
-    appLogo.setDevicePixelRatio(qApp->devicePixelRatio());
-    ui->labelAppLogo->setPixmap(appLogo.scaledToHeight(int(qApp->devicePixelRatio() * 70), Qt::SmoothTransformation));
+    ui->labelGitLogo->setPixmap(gitLogo.scaledToHeight(int(qApp->devicePixelRatio() * 30), Qt::SmoothTransformation));
 
     // Show Qt logo
-    QPixmap qtLogo(iconsDirectory->path() + "/QtLogo.svg");
+    renderer.load(iconsDirectory->path() + "/QtLogo.svg");
+    QImage qtLogoImage(renderer.defaultSize().width() / 2, renderer.defaultSize().height() / 2, QImage::Format_ARGB32);
+    qtLogoImage.fill(0x00000000);
+    QPainter _painter(&qtLogoImage);
+    renderer.render(&_painter);
+
+    QPixmap qtLogo(QPixmap::fromImage(qtLogoImage));
     qtLogo.setDevicePixelRatio(qApp->devicePixelRatio());
     ui->labelQtLogo->setPixmap(qtLogo.scaledToHeight(int(qApp->devicePixelRatio() * 20), Qt::SmoothTransformation));
 }

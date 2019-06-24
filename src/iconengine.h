@@ -4,9 +4,11 @@
 #include <QStringList>
 #include <QString>
 #include <QImage>
+#include <QSvgRenderer>
 #include <QFileInfoList>
 #include <QFileInfo>
 #include <QPixmap>
+#include <QPainter>
 #include <QLabel>
 #include <QDebug>
 #include <QIcon>

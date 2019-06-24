@@ -4,6 +4,8 @@
 #include "mainwindow.h"
 #include "aboutlicence.h"
 
+#include <QtSvg/QSvgRenderer>
+#include <QPainter>
 #include <QDialog>
 #include <QImage>
 #include <QDir>
