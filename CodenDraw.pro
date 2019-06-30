@@ -28,21 +28,21 @@ SOURCES += \
         src/aboutlicence.cpp \
         src/aboutwindow.cpp \
         src/codeeditor.cpp \
+        src/codendrawscene.cpp \
         src/configfile.cpp \
         src/customgraphicsscene.cpp \
         src/iconengine.cpp \
         src/main.cpp \
-        src/mainscene.cpp \
         src/mainwindow.cpp
 
 HEADERS += \
         src/aboutlicence.h \
         src/aboutwindow.h \
         src/codeeditor.h \
+        src/codendrawscene.h \
         src/configfile.h \
         src/customgraphicsscene.h \
         src/iconengine.h \
-        src/mainscene.h \
         src/mainwindow.h
 
 FORMS += \

@@ -13,10 +13,10 @@
 #include <QGraphicsSceneDragDropEvent>
 
 
-class MainScene : public QGraphicsScene
+class CodenDrawScene : public QGraphicsScene
 {
 public:
-    MainScene();
+    CodenDrawScene();
 
     /// Set scale value
     void setScale(double scale);
@@ -29,6 +29,10 @@ public:
 
     /// Get empty space around table (millimeters)
     QSize& emptySpace();
+
+    void setOffset(const QSizeF &size);
+
+    QSizeF& offset();
 
     /// Set table size
     void setTable(const QSize &table);
@@ -52,7 +56,7 @@ public:
     void setBackgroundColor(const QColor &color);
 
     /// Set physical display ppi
-    void setPPI(const QSizeF &size);
+    void setPPI(double ppi);
 
     /// Zoom preview
     void zoom(double scale, const QPointF &position);
@@ -73,8 +77,10 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void wheelEvent(QGraphicsSceneWheelEvent *event);
 
+    // In percent
     double      mainScale   = 1;
-    double      scaleFactor = 1;
+    // In pixels
+    double      scaleFactor;
     QSize       mainTable;
     QSize       mainTableEmptySpace;
     QSizeF      mainOffset;
@@ -83,7 +89,7 @@ protected:
     QPoint      mouseCurrent;
     QColor      mainColor;
     QColor      mainBackgroundColor;
-    QSizeF      mainPPI;
+    double      mainPPI;
 };
 
 #endif // MAINSCENE_H

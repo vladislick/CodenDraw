@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>956</width>
-    <height>635</height>
+    <height>647</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,36 +21,23 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
-    <item row="1" column="0">
-     <widget class="QSlider" name="verticalSlider">
-      <property name="minimum">
-       <number>100</number>
-      </property>
-      <property name="maximum">
-       <number>1000</number>
-      </property>
-      <property name="singleStep">
-       <number>4</number>
-      </property>
-      <property name="pageStep">
-       <number>50</number>
-      </property>
-      <property name="value">
-       <number>100</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="tickPosition">
-       <enum>QSlider::TicksAbove</enum>
-      </property>
-      <property name="tickInterval">
-       <number>500</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QScrollBar" name="horizontalScrollBar">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <item row="3" column="2">
+     <widget class="QScrollBar" name="verticalScrollBar">
       <property name="maximum">
        <number>10</number>
       </property>
@@ -60,12 +47,15 @@
       <property name="value">
        <number>0</number>
       </property>
+      <property name="tracking">
+       <bool>true</bool>
+      </property>
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Vertical</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
+    <item row="3" column="1">
      <widget class="QGraphicsView" name="graphicsView">
       <property name="minimumSize">
        <size>
@@ -114,26 +104,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="3">
-     <widget class="QScrollBar" name="verticalScrollBar">
-      <property name="maximum">
-       <number>10</number>
-      </property>
-      <property name="singleStep">
-       <number>1</number>
-      </property>
-      <property name="value">
-       <number>0</number>
-      </property>
-      <property name="tracking">
-       <bool>true</bool>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
+    <item row="0" column="1">
      <widget class="QLabel" name="labelDragAndDrop">
       <property name="font">
        <font>
@@ -151,6 +122,57 @@
       </property>
      </widget>
     </item>
+    <item row="4" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+      <item>
+       <widget class="QScrollBar" name="horizontalScrollBar">
+        <property name="minimum">
+         <number>-200</number>
+        </property>
+        <property name="maximum">
+         <number>200</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBox">
+        <property name="suffix">
+         <string>%</string>
+        </property>
+        <property name="prefix">
+         <string/>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>5000</number>
+        </property>
+        <property name="singleStep">
+         <number>45</number>
+        </property>
+        <property name="stepType">
+         <enum>QAbstractSpinBox::DefaultStepType</enum>
+        </property>
+        <property name="value">
+         <number>100</number>
+        </property>
+        <property name="displayIntegerBase">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -166,103 +188,39 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <widget class="QMenu" name="menuRecentFiles">
-     <property name="title">
-      <string>&amp;Recent files</string>
-     </property>
-     <addaction name="separator"/>
-    </widget>
-    <addaction name="actionOpen"/>
-    <addaction name="menuRecentFiles"/>
     <addaction name="separator"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionSaveAs"/>
-    <addaction name="actionClose"/>
-    <addaction name="separator"/>
-    <addaction name="actionRefresh"/>
-    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuPanels">
-     <property name="title">
-      <string>Panels</string>
-     </property>
-     <widget class="QMenu" name="menuControlPanel">
-      <property name="title">
-       <string>Control</string>
-      </property>
-     </widget>
-     <widget class="QMenu" name="menuCodePanel">
-      <property name="title">
-       <string>Code</string>
-      </property>
-     </widget>
-     <widget class="QMenu" name="menuOutputPanel">
-      <property name="title">
-       <string>Output</string>
-      </property>
-     </widget>
-     <widget class="QMenu" name="menuAxisValuePanel">
-      <property name="title">
-       <string>Value</string>
-      </property>
-     </widget>
-     <widget class="QMenu" name="menuConnectionPanel">
-      <property name="title">
-       <string>Connection</string>
-      </property>
-     </widget>
-     <addaction name="menuControlPanel"/>
-     <addaction name="menuCodePanel"/>
-     <addaction name="menuOutputPanel"/>
-     <addaction name="menuAxisValuePanel"/>
-     <addaction name="menuConnectionPanel"/>
-    </widget>
-    <addaction name="menuPanels"/>
-    <addaction name="actionInvertColors"/>
-    <addaction name="actionAntialiasing"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
      <string>&amp;Settings</string>
     </property>
-    <widget class="QMenu" name="menuPort">
-     <property name="title">
-      <string>Port</string>
-     </property>
-     <addaction name="actionNot_found"/>
-    </widget>
-    <addaction name="menuPort"/>
-    <addaction name="actionConfigure"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuControl">
     <property name="title">
-     <string>Control</string>
+     <string>Project</string>
     </property>
-    <addaction name="actionStart"/>
-    <addaction name="actionStop"/>
-    <addaction name="actionPause"/>
-    <addaction name="actionSendCommand"/>
    </widget>
-   <widget class="QMenu" name="menuInfo">
+   <widget class="QMenu" name="menuDevice">
     <property name="title">
-     <string>Info</string>
+     <string>Device</string>
     </property>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuDevice"/>
    <addaction name="menuControl"/>
    <addaction name="menuSettings"/>
-   <addaction name="menuInfo"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -273,19 +231,22 @@
    <attribute name="dockWidgetArea">
     <number>8</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
+   <widget class="QWidget" name="dockWidgetOutputContent">
     <layout class="QVBoxLayout" name="verticalLayout_2">
-     <property name="leftMargin">
+     <property name="spacing">
       <number>2</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
      </property>
      <property name="topMargin">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="bottomMargin">
-      <number>2</number>
+      <number>0</number>
      </property>
      <item>
       <widget class="QTextEdit" name="textEditOutput">
@@ -304,19 +265,22 @@
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContentsCode">
+   <widget class="QWidget" name="dockWidgetCodeContent">
     <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
-     <property name="leftMargin">
+     <property name="spacing">
       <number>2</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
      </property>
      <property name="topMargin">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="bottomMargin">
-      <number>2</number>
+      <number>0</number>
      </property>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_6"/>
@@ -327,6 +291,9 @@
         <widget class="QLabel" name="label">
          <property name="text">
           <string>Lines</string>
+         </property>
+         <property name="margin">
+          <number>2</number>
          </property>
         </widget>
        </item>
@@ -342,13 +309,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Current char</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </item>
@@ -735,6 +695,22 @@
    </property>
    <property name="text">
     <string>Antialiasing</string>
+   </property>
+  </action>
+  <action name="actionStatusBar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Status bar</string>
+   </property>
+  </action>
+  <action name="actionTool_bar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Tool bar</string>
    </property>
   </action>
  </widget>

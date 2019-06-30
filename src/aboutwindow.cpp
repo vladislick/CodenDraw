@@ -18,7 +18,7 @@ AboutWindow::AboutWindow(QWidget *parent) :
                                    .arg(QCoreApplication::applicationName()));
 
     // Указываем версию приложения
-    ui->labelLicence->setText("<style> a { text-decoration: none; }</style><a href=#>" + tr("Licence: %1, version 3").arg("GNU General Public License") + "</a>");
+    ui->labelLicence->setText("<style> a { text-decoration: none; }</style><a href=#>" + tr("Licence: %1").arg("GNU General Public License v3.0") + "</a>");
 
     ui->labelProjectPage->setText(QString("<style>a{text-decoration:none;color:") + QLabel().palette().color(QPalette::WindowText).name() +
                                   ";}</style><a href=\"" + ProjectLink + "\">" + tr("Project page on GitHub") + "</a>");

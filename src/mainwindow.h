@@ -1,17 +1,28 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-// Include main Qt headers
+/* INCLUDE MAIN QT HEADERS */
+
+// For GUI
+#include <QLabel>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QSlider>
+#include <QPainter>
+#include <QPushButton>
+#include <QToolButton>
+#include <QToolBar>
+#include <QComboBox>
+
+// For backend
 #include <QDir>
 #include <QDebug>
-#include <QLabel>
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QDesktopWidget>
-#include <QHBoxLayout>
 #include <QMessageBox>
-#include <QGraphicsView>
-#include <QGraphicsScene>
 #include <QScreen>
 #include <QDropEvent>
 #include <QDragEnterEvent>
@@ -25,23 +36,24 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 #include <QStandardPaths>
-#include <QPainter>
 #include <QFile>
 #include <QFileInfo>
-#include <QTextCodec>
 #include <QStandardPaths>
 #include <QElapsedTimer>
 #include <QWheelEvent>
 #include <QMimeData>
 #include <QSettings>
-#include <QTextDecoder>
+#include <QScreen>
 
-// Include .h headers
+/* INCLUDE CUSTOM HEADERS */
+
 #include "customgraphicsscene.h"
 #include "codeeditor.h"
 #include "configfile.h"
 #include "iconengine.h"
-#include "mainscene.h"
+#include "codendrawscene.h"
+
+/* DEFINE SOME VALUES */
 
 /// Application version
 #define AppVersion "1.0-dev"
@@ -95,20 +107,29 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
-    void on_actionQuit_triggered();
-    void on_actionAbout_triggered();
-    void on_actionSave_triggered();
-    void on_actionOpen_triggered();
-    void on_actionClose_triggered();
-    void on_actionSaveAs_triggered();
-    void on_actionRefresh_triggered();
-    void currentTimeChanged();
+
+    void actionOpenTriggered();
+    void actionSaveTriggered();
+    void actionSaveAsTriggered();
+    void actionCloseTriggered();
+    void actionQuitTriggered();
+
+    void actionDeviceTriggered(bool);
+
+    void updateDevicesList();
+
+    void actionAboutTriggered();
 
     /// Open the recent file that caused this slot
-    void openRecentFile();
+    void actionRecentTriggered();
     /// Clear recent files list
-    void clearRecentFiles();
+    void actionClearRecentTriggered();
 
+    void toolBarOrientationChanged(Qt::Orientation);
+
+    void previewUpdate();
+
+    void currentTimeChanged();
     void codeChanged();
     void clearOutput();
 
@@ -117,6 +138,8 @@ private slots:
     void on_horizontalScrollBar_sliderMoved(int position);
 
     void on_verticalScrollBar_sliderMoved(int position);
+
+    void on_spinBox_valueChanged(int arg1);
 
 private:
 
@@ -156,18 +179,16 @@ private:
     /// Update user interface
     void updateGUI();
 
+    void updateDevices();
+
     Ui::MainWindow  *ui;
     CodeEditor      *code;
     QHBoxLayout     *statusBarLayout;
-    MainScene       *mainScene;
-    QLabel          *currentStatusLabel;
-    QLabel          *currentTimeLabel;
-    QTimer          *currentTimeTimer;
     QList<QAction*> recentFiles;
     QColor          *windowColor;
     QColor          *textColor;
     QColor          *highlightColor;
-    IconEngine      *mainIcon;
+    IconEngine      *icon;
 
     QSize           *mainTable;
     QSize           *mainEngineSteps;
@@ -175,6 +196,41 @@ private:
     QSizeF          *mainStepSize;
     double          mainHorizontalSlider;
     double          mainVerticalSlider;
+
+    /****** GRAPHICSSCENE ******/
+    CodenDrawScene  *mainScene;
+    QTimer          *sceneTimer;
+
+
+    /****** STATUS BAR ******/
+    QLabel          *currentStatusLabel;
+    QLabel          *currentConnection;
+    QLabel          *currentTimeLabel;
+    QTimer          *currentTimeTimer;
+
+
+    /****** MENU "FILE" ******/
+    QAction         *actionOpen;
+    QMenu           *menuRecent;
+    QAction         *actionClearRecent;
+    QAction         *actionEmptyList;
+    QAction         *actionSave;
+    QAction         *actionSaveAs;
+    QAction         *actionClose;
+    QAction         *actionQuit;
+
+    /****** MENU "SETTINGS" ******/
+    QMenu           *menuPanels;
+    QAction         *actionConfigure;
+
+    /****** MENU "DEVICE" ******/
+    QTimer          *deviceTimer;
+
+    /****** MENU "HELP" ******/
+    QAction         *actionAbout;
+
+    QSerialPort     *currentDevice;
+    QSerialPortInfo *currentDeviceInfo;
 
     /// Info about file that is open
     QFileInfo   *currentFile;

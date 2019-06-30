@@ -118,6 +118,12 @@ QIcon IconEngine::getByName(QString iconName)
     else return QIcon(); // Return an empty icon if cannot find needed icon
 }
 
+/// Get icon from icons directory
+QIcon   IconEngine::byName(QString iconName)
+{
+    return getByName(iconName);
+}
+
 QString IconEngine::findByName(const QString &fileName, const QString &directory)
 {
     QDir dir(directory);

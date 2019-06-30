@@ -14,7 +14,7 @@
 #include <QIcon>
 #include <QDir>
 
-#define  IconPixelSize  32
+#define  IconPixelSize  64
 
 class IconEngine
 {
@@ -41,6 +41,8 @@ public:
     Style   style();
     /// Get icon from icons directory
     QIcon   getByName(QString iconName);
+    /// Get icon from icons directory
+    QIcon   byName(QString iconName);
     /// Find an icon in the directory
     QString findByName(const QString &fileName, const QString &directory);
 
