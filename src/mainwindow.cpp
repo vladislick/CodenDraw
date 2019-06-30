@@ -48,9 +48,9 @@ MainWindow::MainWindow(QWidget *parent) :
     mainScene = new CodenDrawScene();
     sceneTimer = new QTimer();
     mainScene->setPPI(qApp->screens()[qApp->desktop()->screenNumber(this)]->physicalDotsPerInch());
-    mainScene->setTable(QSize(297, 210));
-    mainScene->setOffset(QSize(10, 10));
+    mainScene->setTable(QSize(240, 160));
     mainScene->setScale(1);
+    mainScene->setScaleSpinBox(ui->spinBox);
 
     ui->labelDragAndDrop->setVisible(false);
     ui->graphicsView->setAcceptDrops(true);
@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(mainScene);
 
     connect(sceneTimer, SIGNAL(timeout()), this, SLOT(previewUpdate()));
-    sceneTimer->start(20);
+    sceneTimer->start(15);
 
     // Setup IconEngine
     icon = new IconEngine;
@@ -193,19 +193,31 @@ void MainWindow::previewUpdate()
 {
     static double scaleLast = 0;
     static QSizeF offsetLast;
+    static double dxLast = mainScene->offsetX();
+    static double dyLast = mainScene->offsetY();
 
-    if (scaleLast != mainScene->scale() || offsetLast != mainScene->offset())
+    if (mainScene->mousePressed())
+    {
+        mainScene->setOffsetX(dxLast + mainScene->mousePos().x() - mainScene->mouseStartPos().x());
+        mainScene->setOffsetY(dyLast + mainScene->mousePos().y() - mainScene->mouseStartPos().y());
+    }
+    else
+    {
+        dxLast = mainScene->offsetX();
+        dyLast = mainScene->offsetY();
+    }
+
+    if (scaleLast != mainScene->scale() || offsetLast != mainScene->offset() || mainScene->mousePressed())
     {
         offsetLast = mainScene->offset();
         scaleLast = mainScene->scale();
     }
-    else
-        return;
+    else return;
 
     mainScene->clear();
     mainScene->setSceneRect(0, 0, ui->graphicsView->width(), ui->graphicsView->height());
 
-    mainScene->drawTableShadow(3, textColor->lighter(300));
+    mainScene->drawTableShadow(5, textColor->lighter(200));
     mainScene->drawTable(*textColor);
     mainScene->update();
 }
@@ -692,6 +704,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_spinBox_valueChanged(int arg1)
 {
-    mainScene->setScale(double(arg1) / 100);
-    ui->spinBox->setSingleStep(int(arg1 * 0.06 + 1));
+    mainScene->zoom(double(arg1) / 100, mainScene->mousePos());
+    ui->spinBox->setSingleStep(int(arg1 * 0.08 + 1));
 }

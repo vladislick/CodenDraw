@@ -8,6 +8,7 @@
 #include <QPen>
 #include <QMimeData>
 #include <QSize>
+#include <QSpinBox>
 #include <QGraphicsSceneWheelEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneDragDropEvent>
@@ -23,6 +24,22 @@ public:
 
     /// Get scale value
     double scale();
+
+    void setScaleSpinBox(QSpinBox *spinBox);
+
+    QSpinBox* scaleSpinBox();
+
+    void setOffsetX(double value);
+
+    double offsetX();
+
+    void setOffsetY(double value);
+
+    double offsetY();
+
+    void changeOffsetX(double value);
+
+    void changeOffsetY(double value);
 
     /// Set empty space around table (millimeters)
     void setEmptySpace(const QSize &size);
@@ -62,10 +79,10 @@ public:
     void zoom(double scale, const QPointF &position);
 
     /// Get current mouse position on scene
-    QPoint& mousePos();
+    QPointF& mousePos();
 
     /// Get start mouse position when button is pressed
-    QPoint& mouseStartPos();
+    QPointF& mouseStartPos();
 
     /// Get current mouse button status
     bool    mousePressed();
@@ -77,19 +94,22 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void wheelEvent(QGraphicsSceneWheelEvent *event);
 
+    QSpinBox    *mainSpinBox;
+
     // In percent
     double      mainScale   = 1;
     // In pixels
-    double      scaleFactor;
+    double      scaleFactor = 1;
     QSize       mainTable;
     QSize       mainTableEmptySpace;
     QSizeF      mainOffset;
     bool        isMousePressed = 0;
-    QPoint      mouseStart;
-    QPoint      mouseCurrent;
+    QPointF     mouseStart;
+    QPointF     mouseCurrent;
     QColor      mainColor;
     QColor      mainBackgroundColor;
     double      mainPPI;
+    double      dx, dy;
 };
 
 #endif // MAINSCENE_H

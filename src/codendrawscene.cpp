@@ -15,8 +15,7 @@ void CodenDrawScene::setBackgroundColor(const QColor &color) {
 /// Set scale value
 void CodenDrawScene::setScale(double scale)
 {
-    mainScale = scale;
-    scaleFactor = mainPPI / 25.4 * mainScale;
+    this->zoom(scale, QPointF(QGraphicsScene::width() / 2, QGraphicsScene::height() / 2));
 }
 
 /// Get scale value
@@ -57,6 +56,8 @@ QSize& CodenDrawScene::emptySpace()
 void CodenDrawScene::setTable(const QSize &table)
 {
     mainTable = table;
+    dx = (QGraphicsScene::width() - scaleFactor * mainTable.width()) / 2;
+    dy = (QGraphicsScene::height() - scaleFactor * mainTable.height()) / 2;
 }
 
 /// Draw rulers around main table
@@ -77,7 +78,7 @@ void CodenDrawScene::drawTable(const QColor &color)
     QPen pen(color);
     pen.setWidth(1);
 
-    QGraphicsScene::addRect(mainOffset.width() * scaleFactor, mainOffset.height() * scaleFactor, mainTable.width() * scaleFactor, mainTable.height() * scaleFactor, pen);
+    QGraphicsScene::addRect(dx, dy, mainTable.width() * scaleFactor, mainTable.height() * scaleFactor, pen);
 }
 
 /// Draw main table shadow
@@ -86,64 +87,120 @@ void CodenDrawScene::drawTableShadow(int widthInPixels, const QColor &color)
     QPen pen(color);
     pen.setWidth(widthInPixels);
 
-    QGraphicsScene::addLine(scaleFactor * (mainOffset.width() + mainTable.width()) + pen.width() / 2,
-                            scaleFactor * mainOffset.height() + pen.width() + (pen.width() >> 1),
-                            scaleFactor * (mainOffset.width() + mainTable.width()) + pen.width() / 2,
-                            scaleFactor * (mainOffset.height() + mainTable.height()) + pen.width() / 2, pen);
-    QGraphicsScene::addLine(scaleFactor * (mainOffset.width() + mainTable.width()) + pen.width() / 2,
-                            scaleFactor * (mainOffset.height() + mainTable.height()) + pen.width() / 2,
-                            scaleFactor * mainOffset.width() + pen.width() + (pen.width() >> 1),
-                            scaleFactor * (mainOffset.height() + mainTable.height()) + pen.width() / 2, pen);
+    QGraphicsScene::addLine(dx + scaleFactor * mainTable.width() + pen.width() / 2,
+                            dy + pen.width() + (pen.width() >> 1),
+                            dx + scaleFactor * mainTable.width() + pen.width() / 2,
+                            dy + scaleFactor * mainTable.height() + pen.width() / 2, pen);
+    QGraphicsScene::addLine(dx + scaleFactor * mainTable.width() + pen.width() / 2,
+                            dy + scaleFactor * mainTable.height() + pen.width() / 2,
+                            dx + pen.width() + (pen.width() >> 1),
+                            dy + scaleFactor * mainTable.height() + pen.width() / 2, pen);
 
 }
 
 /// Zoom preview
 void CodenDrawScene::zoom(double scale, const QPointF &position)
 {
+    mainScale = scale;
 
+    double x = (position.x() - dx) / scaleFactor; // mm
+    double y = (position.y() - dy) / scaleFactor; // mm
+
+    scaleFactor = mainPPI / 25.4 * mainScale;
+
+    dx = position.x() - scaleFactor * x;
+    dy = position.y() - scaleFactor * y;
 }
 
 /// Get current mouse position on scene
-QPoint& CodenDrawScene::mousePos()
+QPointF& CodenDrawScene::mousePos()
 {
+    return mouseCurrent;
+}
 
+void CodenDrawScene::setOffsetX(double value)
+{
+    dx = value;
+}
+
+double CodenDrawScene::offsetX()
+{
+    return dx;
+}
+
+void CodenDrawScene::setOffsetY(double value)
+{
+    dy = value;
+}
+
+double CodenDrawScene::offsetY()
+{
+    return dy;
+}
+
+void CodenDrawScene::changeOffsetX(double value)
+{
+    dx += value;
+}
+
+void CodenDrawScene::changeOffsetY(double value)
+{
+    dy += value;
 }
 
 /// Get start mouse position when button is pressed
-QPoint& CodenDrawScene::mouseStartPos()
+QPointF& CodenDrawScene::mouseStartPos()
 {
-
+    return mouseStart;
 }
 
 /// Get current mouse button status
 bool CodenDrawScene::mousePressed()
 {
-
+    return isMousePressed;
 }
 
 void CodenDrawScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    if (!isMousePressed)
+        mouseStart = mouseEvent->scenePos();
 
+    mouseCurrent = mouseEvent->scenePos();
 }
 
 void CodenDrawScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-
-
+    isMousePressed = true;
+    for (const auto &viewer : QGraphicsScene::views())
+        viewer->setCursor(Qt::SizeAllCursor);
 }
 
 void CodenDrawScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-
+    isMousePressed = false;
+    for (const auto &viewer : QGraphicsScene::views())
+        viewer->setCursor(Qt::ArrowCursor);
 }
 
 void CodenDrawScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (event->mimeData()->hasUrls()) {
-        for (int i = 0; i < views().count(); i++) views()[i]->setVisible(false);
-    }
+
 }
 
-void CodenDrawScene::wheelEvent(QGraphicsSceneWheelEvent *event) {
+void CodenDrawScene::wheelEvent(QGraphicsSceneWheelEvent *event)
+{
+    if (event->delta() > 0)
+        mainSpinBox->stepUp();
+    else if (event->delta() < 0)
+        mainSpinBox->stepDown();
+}
 
+void CodenDrawScene::setScaleSpinBox(QSpinBox *spinBox)
+{
+    mainSpinBox = spinBox;
+}
+
+QSpinBox* CodenDrawScene::scaleSpinBox()
+{
+    return  mainSpinBox;
 }
